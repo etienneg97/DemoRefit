@@ -1,5 +1,6 @@
 ﻿using DemoRefit.Client.Api;
 using DemoRefit.Models;
+using Refit;
 
 namespace DemoRefit.Client.Pages
 {
@@ -10,7 +11,6 @@ namespace DemoRefit.Client.Pages
         private List<Book> books = new();
         private string message = "";
 
-        // Injection via constructeur
         public BookPage(IBookApi bookApi)
         {
             _bookApi = bookApi;
@@ -18,92 +18,72 @@ namespace DemoRefit.Client.Pages
 
         private async Task GetBook()
         {
-            try
+            IApiResponse<Book> response = await _bookApi.GetBookByIdAsync(book.Id);
+            if (response.IsSuccessStatusCode)
             {
-                var result = await _bookApi.GetBookByIdAsync(book.Id);
-                if (result != null)
-                {
-                    book = result;
-                    message = $"Livre trouvé: {book.Title}";
-                }
-                else
-                {
-                    message = "Livre non trouvé.";
-                }
+                book = response.Content!;
+                message = $"Livre trouvé: {book.Title}";
             }
-            catch (Exception ex)
+            else
             {
-                message = $"Erreur GET: {ex.Message}";
+                message = $"Livre non trouvé. Status: {response.StatusCode}";
             }
         }
 
         private async Task GetAllBooks()
         {
-            try
+            IApiResponse<List<Book>> response = await _bookApi.GetAllBooksAsync();
+            if (response.IsSuccessStatusCode)
             {
-                var result = await _bookApi.GetAllBooksAsync();
-                if (result != null)
-                {
-                    books = result;
-                    message = $"Livres récupérés: {books.Count}";
-                }
-                else
-                {
-                    message = "Aucun livre trouvé.";
-                }
+                books = response.Content!;
+                message = $"Livres récupérés: {books.Count}";
             }
-            catch (Exception ex)
+            else
             {
-                message = $"Erreur GET ALL: {ex.Message}";
+                message = $"Aucun livre trouvé. Status: {response.StatusCode}";
             }
         }
 
         private async Task PostBook()
         {
-            try
+            IApiResponse<Book> response = await _bookApi.CreateBookAsync(book);
+            if (response.IsSuccessStatusCode)
             {
-                var createdBook = await _bookApi.CreateBookAsync(book);
-                if (createdBook != null)
-                {
-                    message = "Livre créé avec succès.";
-                    book = createdBook;
-                }
-                else
-                {
-                    message = "Erreur lors de la création.";
-                }
+                book = response.Content!;
+                message = "Livre créé avec succès.";
             }
-            catch (Exception ex)
+            else
             {
-                message = $"Erreur POST: {ex.Message}";
+                message = $"Erreur lors de la création. Status: {response.StatusCode}";
             }
         }
 
         private async Task PutBook()
         {
-            try
+            IApiResponse response = await _bookApi.UpdateBookAsync(book.Id, book);
+            if (response.IsSuccessStatusCode)
             {
-                await _bookApi.UpdateBookAsync(book.Id, book);
                 message = "Livre mis à jour.";
             }
-            catch (Exception ex)
+            else
             {
-                message = $"Erreur PUT: {ex.Message}";
+                message = $"Erreur PUT. Status: {response.StatusCode}";
             }
         }
 
         private async Task DeleteBook()
         {
-            try
+            IApiResponse response = await _bookApi.DeleteBookAsync(book.Id);
+            if (response.IsSuccessStatusCode)
             {
-                await _bookApi.DeleteBookAsync(book.Id);
                 message = "Livre supprimé.";
                 book = new Book();
             }
-            catch (Exception ex)
+            else
             {
-                message = $"Erreur DELETE: {ex.Message}";
+                message = $"Erreur DELETE. Status: {response.StatusCode}";
             }
         }
+
     }
 }

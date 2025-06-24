@@ -5,19 +5,20 @@ namespace DemoRefit.Client.Api
 {
     public interface IBookApi
     {
-        [Get("/api/book")]
-        Task<List<Book>> GetAllBooksAsync();
+        [Get("/api/books/{id}")]
+        Task<IApiResponse<Book>> GetBookByIdAsync(int id);
 
-        [Get("/api/book/{id}")]
-        Task<Book> GetBookByIdAsync(int id);
+        [Get("/api/book")]
+        Task<IApiResponse<List<Book>>> GetAllBooksAsync();
 
         [Post("/api/book")]
-        Task<Book> CreateBookAsync([Body] Book newBook);
+        Task<IApiResponse<Book>> CreateBookAsync([Body] Book newBook);
 
         [Put("/api/book/{id}")]
-        Task UpdateBookAsync(int id, [Body] Book updatedBook);
+        Task<IApiResponse> UpdateBookAsync(int id, [Body] Book updatedBook);
 
         [Delete("/api/book/{id}")]
-        Task DeleteBookAsync(int id);
+        Task<IApiResponse> DeleteBookAsync(int id);
     }
+
 }
