@@ -1,20 +1,18 @@
-using DemoRefit.Client.Api;
+using DemoRefit.Client.Refit;
 using DemoRefit.Components;
-using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddRefitClient<IBookApi>()
-    .ConfigureHttpClient(c =>
-    {
-        c.BaseAddress = new Uri("https://localhost:7225/");
-    });
+
+builder.Services.AddRefitClients(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
@@ -37,6 +35,12 @@ else
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 

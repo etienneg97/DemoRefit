@@ -1,9 +1,10 @@
-﻿using DemoRefit.Models;
+﻿using DemoRefit.Client.Api;
+using DemoRefit.Models;
 using Refit;
 
-namespace DemoRefit.Client.Api
+namespace DemoRefit.Client.Refit
 {
-    public interface IBookApi
+    public interface IBookApiService
     {
         [Get("/api/book/{id}")]
         Task<IApiResponse<Book>> GetBookByIdAsync(int id);
@@ -20,5 +21,4 @@ namespace DemoRefit.Client.Api
         [Delete("/api/book/{id}")]
         Task<IApiResponse> DeleteBookAsync(int id);
     }
-
 }

@@ -1,17 +1,19 @@
 ﻿using DemoRefit.Client.Api;
+using DemoRefit.Client.Refit;
 using DemoRefit.Models;
-using Refit;
 
 namespace DemoRefit.Client.Pages
 {
     public partial class BookPage
     {
-        private readonly IBookApi _bookApi;
+        private readonly IBookApiService _bookApiService;
+        private readonly IDateApiService _dateApiService;
 
         private Book book = new() { Id = 1 };
         private List<Book> books = new();
         private string message = "";
         private string _idsInput = "";
+        private DateTime _lastApiCall = DateTime.Now;
 
         private BookParameters _parameters = new BookParameters
         {
@@ -19,20 +21,23 @@ namespace DemoRefit.Client.Pages
             Limit = 10
         };
 
-        public BookPage(IBookApi bookApi)
+        public BookPage(IBookApiService bookApiService,
+                        IDateApiService dateApiService)
         {
-            _bookApi = bookApi;
+            _bookApiService = bookApiService;
+            _dateApiService = dateApiService;
         }
 
         private async Task GetBook()
         {
-            IApiResponse<Book> response = await _bookApi.GetBookByIdAsync(book.Id);
+            var response = await _bookApiService.GetBookByIdAsync(book.Id);
             if (response.IsSuccessStatusCode)
             {
                 book = response.Content!;
                 books.Clear();
                 books.Add(book);
                 message = $"Livre trouvé: {book.Title}";
+                await UpdateLastApiCall();
             }
             else
             {
@@ -43,11 +48,12 @@ namespace DemoRefit.Client.Pages
         private async Task GetAllBooks()
         {
             _parameters.Ids = GetIds();
-            IApiResponse<List<Book>> response = await _bookApi.GetAllBooksAsync(_parameters);
+            var response = await _bookApiService.GetAllBooksAsync(_parameters);
             if (response.IsSuccessStatusCode)
             {
                 books = response.Content!;
                 message = $"Livres récupérés: {books.Count}";
+                await UpdateLastApiCall();
             }
             else
             {
@@ -57,11 +63,12 @@ namespace DemoRefit.Client.Pages
 
         private async Task PostBook()
         {
-            IApiResponse<Book> response = await _bookApi.CreateBookAsync(book);
+            var response = await _bookApiService.CreateBookAsync(book);
             if (response.IsSuccessStatusCode)
             {
                 book = response.Content!;
                 message = "Livre créé avec succès.";
+                await UpdateLastApiCall();
             }
             else
             {
@@ -71,10 +78,11 @@ namespace DemoRefit.Client.Pages
 
         private async Task PutBook()
         {
-            IApiResponse response = await _bookApi.UpdateBookAsync(book.Id, book);
+            var response = await _bookApiService.UpdateBookAsync(book.Id, book);
             if (response.IsSuccessStatusCode)
             {
                 message = "Livre mis à jour.";
+                await UpdateLastApiCall();
             }
             else
             {
@@ -84,16 +92,31 @@ namespace DemoRefit.Client.Pages
 
         private async Task DeleteBook()
         {
-            IApiResponse response = await _bookApi.DeleteBookAsync(book.Id);
+            var response = await _bookApiService.DeleteBookAsync(book.Id);
             if (response.IsSuccessStatusCode)
             {
                 message = "Livre supprimé.";
                 book = new Book();
+                await UpdateLastApiCall();
             }
             else
             {
                 message = $"Erreur DELETE. Status: {response.StatusCode}";
             }
+        }
+
+        private async Task UpdateLastApiCall()
+        {
+            var response = await _dateApiService.GetServeurDateTime();
+            if (response.IsSuccessStatusCode)
+            {
+                _lastApiCall = response.Content!;
+            }
+            else
+            {
+                message = $"Erreur lors de la récupération de la date. Status: {response.StatusCode}";
+            }
+
         }
 
         private int[] GetIds()
