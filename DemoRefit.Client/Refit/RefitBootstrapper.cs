@@ -1,4 +1,5 @@
-﻿using Refit;
+﻿using DemoRefit.Client.Handlers;
+using Refit;
 
 namespace DemoRefit.Client.Refit
 {
@@ -6,6 +7,8 @@ namespace DemoRefit.Client.Refit
     {
         public static void AddRefitClients(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient<LanguageHandler>();
+
             var baseUrl = configuration.GetValue<string>("ApiBaseUrl") ?? "https://localhost:7225/";
 
             services.AddRefitClientWithBaseUrl<IBookApiService>(baseUrl);
@@ -16,7 +19,8 @@ namespace DemoRefit.Client.Refit
             where TClient : class
         {
             return services.AddRefitClient<TClient>()
-                           .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl));
+                           .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl))
+                           .AddHttpMessageHandler<LanguageHandler>(); ;
         }
     }
 }

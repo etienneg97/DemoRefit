@@ -10,31 +10,33 @@ namespace DemoRefit.Controllers
     {
         private static List<Book> _books = new()
         {
-            new Book { Id = 1, Title = "1984" },
-            new Book { Id = 2, Title = "Brave New World" },
-            new Book { Id = 3, Title = "Fahrenheit 451" },
-            new Book { Id = 4, Title = "The Catcher in the Rye" },
-            new Book { Id = 5, Title = "To Kill a Mockingbird" },
-            new Book { Id = 6, Title = "The Great Gatsby" },
-            new Book { Id = 7, Title = "Moby Dick" },
-            new Book { Id = 8, Title = "War and Peace" },
-            new Book { Id = 9, Title = "Crime and Punishment" },
-            new Book { Id = 10, Title = "Pride and Prejudice" },
-            new Book { Id = 11, Title = "The Lord of the Rings" },
-            new Book { Id = 12, Title = "Harry Potter and the Sorcerer's Stone" },
-            new Book { Id = 13, Title = "The Hobbit" },
-            new Book { Id = 14, Title = "Alice's Adventures in Wonderland" },
-            new Book { Id = 15, Title = "The Odyssey" },
-            new Book { Id = 16, Title = "Jane Eyre" },
-            new Book { Id = 17, Title = "Wuthering Heights" },
-            new Book { Id = 18, Title = "The Divine Comedy" },
-            new Book { Id = 19, Title = "The Brothers Karamazov" },
-            new Book { Id = 20, Title = "Don Quixote" }
+            new Book { Id = 1, Title = "1984", Language = "en" },
+            new Book { Id = 2, Title = "Le Meilleur des mondes", Language = "fr" },
+            new Book { Id = 3, Title = "Fahrenheit 451", Language = "en" },
+            new Book { Id = 4, Title = "L'Attrape-cœurs", Language = "fr" },
+            new Book { Id = 5, Title = "To Kill a Mockingbird", Language = "en" },
+            new Book { Id = 6, Title = "Gatsby le Magnifique", Language = "fr" },
+            new Book { Id = 7, Title = "Moby Dick", Language = "en" },
+            new Book { Id = 8, Title = "Guerre et Paix", Language = "fr" },
+            new Book { Id = 9, Title = "Crime et Châtiment", Language = "fr" },
+            new Book { Id = 10, Title = "Orgueil et Préjugés", Language = "fr" },
+            new Book { Id = 11, Title = "The Lord of the Rings", Language = "en" },
+            new Book { Id = 12, Title = "Harry Potter à l'école des sorciers", Language = "fr" },
+            new Book { Id = 13, Title = "The Hobbit", Language = "en" },
+            new Book { Id = 14, Title = "Les Aventures d'Alice au pays des merveilles", Language = "fr" },
+            new Book { Id = 15, Title = "The Odyssey", Language = "en" },
+            new Book { Id = 16, Title = "Jane Eyre", Language = "en" },
+            new Book { Id = 17, Title = "Les Hauts de Hurlevent", Language = "fr" },
+            new Book { Id = 18, Title = "La Divine Comédie", Language = "fr" },
+            new Book { Id = 19, Title = "The Brothers Karamazov", Language = "en" },
+            new Book { Id = 20, Title = "Don Quichotte", Language = "fr" }
         };
 
         // GET: api/book
         [HttpGet]
-        public ActionResult<IEnumerable<Book>> GetAllBooks([FromQuery] BookParameters parameters)
+        public ActionResult<IEnumerable<Book>> GetAllBooks(
+            [FromQuery] BookParameters parameters,
+            [FromHeader(Name = "X-Language")] string? language)
         {
             if (parameters == null)
             {
@@ -42,6 +44,11 @@ namespace DemoRefit.Controllers
             }
 
             IEnumerable<Book> query = _books;
+
+            if (!string.IsNullOrWhiteSpace(language))
+            {
+                query = query.Where(b => b.Language.Equals(language, StringComparison.OrdinalIgnoreCase));
+            }
 
             query = parameters.SortAsc ? query.OrderBy(b => b.Id) : query.OrderByDescending(b => b.Id);
 
