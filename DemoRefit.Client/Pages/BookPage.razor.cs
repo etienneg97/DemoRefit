@@ -11,6 +11,7 @@ namespace DemoRefit.Client.Pages
         private Book book = new() { Id = 1 };
         private List<Book> books = new();
         private string message = "";
+        private string _idsInput = "";
 
         private BookParameters _parameters = new BookParameters
         {
@@ -41,6 +42,7 @@ namespace DemoRefit.Client.Pages
 
         private async Task GetAllBooks()
         {
+            _parameters.Ids = GetIds();
             IApiResponse<List<Book>> response = await _bookApi.GetAllBooksAsync(_parameters);
             if (response.IsSuccessStatusCode)
             {
@@ -92,6 +94,26 @@ namespace DemoRefit.Client.Pages
             {
                 message = $"Erreur DELETE. Status: {response.StatusCode}";
             }
+        }
+
+        private int[] GetIds()
+        {
+            int[] ids = [];
+            if (!string.IsNullOrWhiteSpace(_idsInput))
+            {
+                ids = _idsInput
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(idStr =>
+                    {
+                        bool ok = int.TryParse(idStr.Trim(), out int id);
+                        return ok ? id : (int?)null;
+                    })
+                    .Where(id => id.HasValue)
+                    .Select(id => id.Value)
+                    .ToArray();
+            }
+
+            return ids;
         }
 
     }

@@ -24,6 +24,11 @@
         <InputNumber id="limit" class="form-control" @bind-Value="_parameters.Limit" />
     </div>
 
+    <div class="mb-3">
+        <label for="ids">Ids (séparés par des virgules)</label>
+        <InputText id="ids" class="form-control" @bind-Value="_idsInput" />
+    </div>
+
     <div class="mb-2">
         <button class="btn btn-info me-2" @onclick="GetAllBooks">GET ALL</button>
         <button class="btn btn-primary me-2" @onclick="GetBook">GET</button>

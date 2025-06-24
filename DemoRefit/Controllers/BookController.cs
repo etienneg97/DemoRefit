@@ -45,6 +45,11 @@ namespace DemoRefit.Controllers
 
             query = parameters.SortAsc ? query.OrderBy(b => b.Id) : query.OrderByDescending(b => b.Id);
 
+            if (parameters.Ids != null && parameters.Ids.Any())
+            {
+                query = query.Where(b => parameters.Ids.Contains(b.Id));
+            }
+
             if (parameters.Limit > 0)
             {
                 query = query.Take(parameters.Limit);
