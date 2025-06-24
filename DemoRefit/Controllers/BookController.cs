@@ -36,6 +36,11 @@ namespace DemoRefit.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Book>> GetAllBooks([FromQuery] BookParameters parameters)
         {
+            if (parameters == null)
+            {
+                parameters = new BookParameters();
+            }
+
             IEnumerable<Book> query = _books;
 
             query = parameters.SortAsc ? query.OrderBy(b => b.Id) : query.OrderByDescending(b => b.Id);
