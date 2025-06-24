@@ -1,0 +1,85 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## ASP.NET Core / Blazor
+wwwroot/css/site.css
+wwwroot/js/site.js
+wwwroot/dist/
+wwwroot/node_modules/
+*.db
+*.db-shm
+*.db-wal
+
+## Visual Studio
+.vs/
+*.vscode/
+*.log
+*.tlog
+*.pdb
+*.cache
+*.ide
+*.csproj.user
+*.ncrunch*
+_ReSharper*/
+*.DotSettings.user
+
+## Rider
+.idea/
+*.sln.iml
+
+## Build results
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## npm / yarn
+node_modules/
+package-lock.json
+yarn.lock
+
+## Environment files
+.env
+.env.*
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Publish output
+publish/
+*.publishsettings
+
+## Logs
+logs/
+*.log
+
+## Azure Pipelines
+*.azure-pipelines.*
+
+## Coverage reports
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+## Secrets
+secrets.json
+
+## JetBrains Rider
+.idea/
+.idea.*
+
+## Optional: if using SQLite (Blazor WASM with local storage)
+*.sqlite
+
+## Optional: if using Fluent UI or other CSS frameworks with custom build
+tailwind.config.js
+postcss.config.js
+
+## Optional: generated assets
+wwwroot/generated/

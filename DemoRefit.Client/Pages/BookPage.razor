@@ -1,0 +1,40 @@
+﻿@page "/book-api"
+@using DemoRefit.Models
+
+<h3>Book API Demo</h3>
+
+<EditForm Model="@book">
+    <div class="mb-3">
+        <label for="id">Id</label>
+        <InputNumber id="id" class="form-control" @bind-Value="book.Id" />
+    </div>
+
+    <div class="mb-3">
+        <label for="title">Title</label>
+        <InputText id="title" class="form-control" @bind-Value="book.Title" />
+    </div>
+
+    <div class="mb-2">
+        <button class="btn btn-info" @onclick="GetAllBooks">GET ALL</button>
+        <button class="btn btn-primary me-2" @onclick="GetBook">GET</button>
+        <button class="btn btn-success me-2" @onclick="PostBook">POST</button>
+        <button class="btn btn-warning me-2" @onclick="PutBook">PUT</button>
+        <button class="btn btn-danger me-2" @onclick="DeleteBook">DELETE</button>
+    </div>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-info mt-3">@message</div>
+}
+
+@if (books?.Any() == true)
+{
+    <h5 class="mt-4">Liste des livres :</h5>
+    <ul class="list-group">
+        @foreach (var b in books)
+        {
+            <li class="list-group-item">Id: @b.Id – Titre: @b.Title</li>
+        }
+    </ul>
+}
