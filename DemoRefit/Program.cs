@@ -1,4 +1,6 @@
+using DemoRefit.Client.Api;
 using DemoRefit.Components;
+using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +10,11 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7225/") });
+builder.Services.AddRefitClient<IBookApi>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri("https://localhost:7225/");
+    });
 
 builder.Services.AddCors(options =>
 {
