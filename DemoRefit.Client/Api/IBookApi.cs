@@ -5,11 +5,11 @@ namespace DemoRefit.Client.Api
 {
     public interface IBookApi
     {
-        [Get("/api/books/{id}")]
+        [Get("/api/book/{id}")]
         Task<IApiResponse<Book>> GetBookByIdAsync(int id);
 
         [Get("/api/book")]
-        Task<IApiResponse<List<Book>>> GetAllBooksAsync();
+        Task<IApiResponse<List<Book>>> GetAllBooksAsync([Query] BookParameters parameters);
 
         [Post("/api/book")]
         Task<IApiResponse<Book>> CreateBookAsync([Body] Book newBook);

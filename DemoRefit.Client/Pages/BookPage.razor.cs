@@ -7,9 +7,16 @@ namespace DemoRefit.Client.Pages
     public partial class BookPage
     {
         private readonly IBookApi _bookApi;
+
         private Book book = new() { Id = 1 };
         private List<Book> books = new();
         private string message = "";
+
+        private BookParameters _parameters = new BookParameters
+        {
+            SortAsc = true,
+            Limit = 10
+        };
 
         public BookPage(IBookApi bookApi)
         {
@@ -22,6 +29,8 @@ namespace DemoRefit.Client.Pages
             if (response.IsSuccessStatusCode)
             {
                 book = response.Content!;
+                books.Clear();
+                books.Add(book);
                 message = $"Livre trouvé: {book.Title}";
             }
             else
@@ -32,7 +41,7 @@ namespace DemoRefit.Client.Pages
 
         private async Task GetAllBooks()
         {
-            IApiResponse<List<Book>> response = await _bookApi.GetAllBooksAsync();
+            IApiResponse<List<Book>> response = await _bookApi.GetAllBooksAsync(_parameters);
             if (response.IsSuccessStatusCode)
             {
                 books = response.Content!;

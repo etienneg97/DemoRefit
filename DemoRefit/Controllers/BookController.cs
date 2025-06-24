@@ -1,4 +1,5 @@
-﻿using DemoRefit.Client.Models;
+﻿using DemoRefit.Client.Api;
+using DemoRefit.Client.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoRefit.Controllers
@@ -10,14 +11,41 @@ namespace DemoRefit.Controllers
         private static List<Book> _books = new()
         {
             new Book { Id = 1, Title = "1984" },
-            new Book { Id = 2, Title = "Brave New World" }
+            new Book { Id = 2, Title = "Brave New World" },
+            new Book { Id = 3, Title = "Fahrenheit 451" },
+            new Book { Id = 4, Title = "The Catcher in the Rye" },
+            new Book { Id = 5, Title = "To Kill a Mockingbird" },
+            new Book { Id = 6, Title = "The Great Gatsby" },
+            new Book { Id = 7, Title = "Moby Dick" },
+            new Book { Id = 8, Title = "War and Peace" },
+            new Book { Id = 9, Title = "Crime and Punishment" },
+            new Book { Id = 10, Title = "Pride and Prejudice" },
+            new Book { Id = 11, Title = "The Lord of the Rings" },
+            new Book { Id = 12, Title = "Harry Potter and the Sorcerer's Stone" },
+            new Book { Id = 13, Title = "The Hobbit" },
+            new Book { Id = 14, Title = "Alice's Adventures in Wonderland" },
+            new Book { Id = 15, Title = "The Odyssey" },
+            new Book { Id = 16, Title = "Jane Eyre" },
+            new Book { Id = 17, Title = "Wuthering Heights" },
+            new Book { Id = 18, Title = "The Divine Comedy" },
+            new Book { Id = 19, Title = "The Brothers Karamazov" },
+            new Book { Id = 20, Title = "Don Quixote" }
         };
 
         // GET: api/book
         [HttpGet]
-        public ActionResult<IEnumerable<Book>> GetAllBooks()
+        public ActionResult<IEnumerable<Book>> GetAllBooks([FromQuery] BookParameters parameters)
         {
-            return Ok(_books);
+            IEnumerable<Book> query = _books;
+
+            query = parameters.SortAsc ? query.OrderBy(b => b.Id) : query.OrderByDescending(b => b.Id);
+
+            if (parameters.Limit > 0)
+            {
+                query = query.Take(parameters.Limit);
+            }
+
+            return Ok(query.ToList());
         }
 
         // GET: api/book/1
