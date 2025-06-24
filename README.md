@@ -7,6 +7,7 @@
 - Récupération de la date serveur via une API dédiée.
 - Gestion des paramètres de requête (tri, limite, filtres par identifiants).
 - Utilisation d'un handler pour mettre la langue dans les appels API.
+- Utilisation d'une IApiResponse pour gérer les réponses des API.
 
 ## Structure du projet
 - Refit/IBookApiService.cs : Interface Refit pour les opérations sur les livres.
